@@ -1,3 +1,62 @@
 textarea {
     min-height: 400px;
 }
+
+
+.each_email{
+    background-color: rgb(244, 244, 244);
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.each_email h5, p{
+    margin: 0;
+    padding: 5px;
+    text-align: center; 
+}
+
+.each_email #time_stamp {
+    margin-left: auto; 
+    color: rgb(145, 145, 145);
+}
+
+.each_email:hover{
+    background-color: rgb(233, 233, 233);
+}
+
+.read{
+    background-color: red;
+}
+
+.not_read{
+    background-color: blue;
+}
+
+.each-email-view{
+    margin-top: 20px;
+}
+
+.buttons{
+    margin-top: 10px;
+}
+.buttons button{
+    border-radius: 5px;
+    border: none;
+    padding: 10px 15px;
+    background-color: #4285F4;
+    color: white;
+}
+
+.buttons button:hover{
+
+    background-color: #78a6f1;
+    color: white;
+}
+
+#mail_content{
+    margin-top: 30px;
+}
+
