@@ -41,6 +41,8 @@ textarea {
 
 .buttons{
     margin-top: 10px;
+    display: flex;
+    flex-direction: row;
 }
 .buttons button{
     border-radius: 5px;
@@ -54,6 +56,10 @@ textarea {
 
     background-color: #78a6f1;
     color: white;
+
+}
+#archive_btn, #unarchive_btn{
+    margin-left: 10px;
 }
 
 #mail_content{

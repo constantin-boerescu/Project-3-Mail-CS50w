@@ -53,7 +53,6 @@ function load_mailbox(mailbox) {
       } else{
         element.classList.add('not_read');
         element.classList.remove('read');
-
       }
       // adds a cass to the element
       element.classList.add('each_email');
@@ -117,18 +116,37 @@ function see_each_mail(email_id){
     document.querySelector("#mail_timestamp").innerHTML = email.timestamp;
     document.querySelector("#mail_content").innerHTML = email.body;
 
+    if (email.archived) {
+      document.querySelector("#unarchive_btn").style.display = 'block';
+      document.querySelector("#archive_btn").style.display = 'none';
+    } else{
+      document.querySelector("#unarchive_btn").style.display = 'none';
+      document.querySelector("#archive_btn").style.display = 'block';
+    }
     // when achived button is pressed achive the mail
     document.querySelector("#archive_btn").addEventListener('click', function(){
 
       // if a mail in unread gets the email by id and change it's status to achived
-      if(!email.archived){
         fetch(`/emails/${email.id}`, {
           method: 'PUT',
           body: JSON.stringify({
               archived: true
           })
         })
-      }
+        .then(() => {load_mailbox('inbox')})
+    });
+
+     // when achived button is pressed achive the mail
+     document.querySelector("#unarchive_btn").addEventListener('click', function(){
+
+      // if a mail in unread gets the email by id and change it's status to achived
+        fetch(`/emails/${email.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+              archived: false
+          })
+        })
+        .then(() => {load_mailbox('archive')})
     });
 
     // if a mail in unread gets the email by id and change it's status to read
@@ -139,6 +157,7 @@ function see_each_mail(email_id){
           read:true
         })
       })
+     
     }
   })
 
