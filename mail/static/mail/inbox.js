@@ -102,13 +102,11 @@ function send_mail(event){
 function see_each_mail(email_id){
 
   // gets the email info into json from the API by its ID
-  console.log(email_id)
   console.log(`/email/${email_id}`)
   fetch(`/emails/${email_id}`)
   .then(response => response.json())
   .then(email => {
-    console.log(email)
-    // Show the mailbox and hide other views
+    // show the mailbox and hide other views
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'none';
     document.querySelector('#each-email-view').style.display = 'block';
@@ -118,16 +116,30 @@ function see_each_mail(email_id){
     document.querySelector("#mail_subject").innerHTML = email.subject;
     document.querySelector("#mail_timestamp").innerHTML = email.timestamp;
     document.querySelector("#mail_content").innerHTML = email.body;
-    // TO BE CONTINUED
-    document.querySelector("#archive_btn").addEventListener('click', function(email_id){
-      console.log(`/email/${email_id}`)
-      fetch(`/email/${email_id}`, {
+
+    // when achived button is pressed achive the mail
+    document.querySelector("#archive_btn").addEventListener('click', function(){
+
+      // if a mail in unread gets the email by id and change it's status to achived
+      if(!email.archived){
+        fetch(`/emails/${email.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+              archived: true
+          })
+        })
+      }
+    });
+
+    // if a mail in unread gets the email by id and change it's status to read
+    if(!email.read){
+      fetch(`emails/${email.id}`,{
         method: 'PUT',
         body: JSON.stringify({
-            archived: true
+          read:true
         })
       })
-    });
+    }
   })
 
 
