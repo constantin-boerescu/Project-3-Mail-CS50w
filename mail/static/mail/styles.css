@@ -58,7 +58,12 @@ textarea {
     color: white;
 
 }
-#archive_btn, #unarchive_btn{
+.archive_btn, .reply_btn {
+    border-radius: 5px;
+    border: none;
+    padding: 10px 15px;
+    background-color: #4285F4;
+    color: white;
     margin-left: 10px;
 }
 

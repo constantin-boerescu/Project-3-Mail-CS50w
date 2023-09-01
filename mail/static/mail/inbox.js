@@ -65,9 +65,7 @@ function load_mailbox(mailbox) {
       // adds the email into the container
       document.querySelector('#emails-view').append(element);
     });
-    
   })
-  
 }
 
 function send_mail(event){
@@ -92,16 +90,24 @@ function send_mail(event){
     // Print result
     console.log(result);
     load_mailbox('sent');
-    display_email('sent');
+
   })
-
 }
-
 
 function see_each_mail(email_id){
 
+    // removes all buttons if they exist
+    const button_container = document.querySelector('.buttons');
+
+    if (button_container){
+      const buttons = button_container.querySelectorAll('button');
+      console.log("buttons to remove:", buttons);
+      buttons.forEach(button => {
+        button_container.removeChild(button);
+      });
+    }
+
   // gets the email info into json from the API by its ID
-  console.log(`/email/${email_id}`)
   fetch(`/emails/${email_id}`)
   .then(response => response.json())
   .then(email => {
@@ -111,43 +117,11 @@ function see_each_mail(email_id){
     document.querySelector('#each-email-view').style.display = 'block';
 
     document.querySelector("#mail_from").innerHTML = email.sender;
-    document.querySelector("#mail_to").innerHTML = email.recipents;
+    document.querySelector("#mail_to").innerHTML = email.recipients;
     document.querySelector("#mail_subject").innerHTML = email.subject;
     document.querySelector("#mail_timestamp").innerHTML = email.timestamp;
     document.querySelector("#mail_content").innerHTML = email.body;
 
-    if (email.archived) {
-      document.querySelector("#unarchive_btn").style.display = 'block';
-      document.querySelector("#archive_btn").style.display = 'none';
-    } else{
-      document.querySelector("#unarchive_btn").style.display = 'none';
-      document.querySelector("#archive_btn").style.display = 'block';
-    }
-    // when achived button is pressed achive the mail
-    document.querySelector("#archive_btn").addEventListener('click', function(){
-
-      // if a mail in unread gets the email by id and change it's status to achived
-        fetch(`/emails/${email.id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-              archived: true
-          })
-        })
-        .then(() => {load_mailbox('inbox')})
-    });
-
-     // when achived button is pressed achive the mail
-     document.querySelector("#unarchive_btn").addEventListener('click', function(){
-
-      // if a mail in unread gets the email by id and change it's status to achived
-        fetch(`/emails/${email.id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-              archived: false
-          })
-        })
-        .then(() => {load_mailbox('archive')})
-    });
 
     // if a mail in unread gets the email by id and change it's status to read
     if(!email.read){
@@ -157,12 +131,50 @@ function see_each_mail(email_id){
           read:true
         })
       })
-     
     }
-  })
 
+    // achive and unarchive logic
+    const button_archive = document.createElement('button');
+    button_archive.innerHTML = email.archived ? "Unarchive" : "Archive";
+    button_archive.className = "archive_btn";
+    // when achived button is pressed achive the mail
+    button_archive.addEventListener('click', function() {
+      // if a mail in unread gets the email by id and change it's status to achived
+        fetch(`/emails/${email.id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+              archived: !email.archived
+          })
+        })
+        .then(() => { load_mailbox('inbox')})
+    });
+    document.querySelector('.buttons').appendChild(button_archive);
 
+    // reply logic
+
+    // crate reply button
+    const button_reply = document.createElement('button');
+    button_reply.innerHTML = 'Reply';
+    button_reply.className = 'reply_btn';
+
+    button_reply.addEventListener('click', function() {
+      compose_email();
+      console.log(email.sender)
+      document.querySelector('#compose-recipients').value = email.sender;
+      const subject = email.subject
+      // check if the subject starts with Re: and adds it if not
+      if (subject.slice(0, 3) === 'Re:'){
+        document.querySelector('#compose-subject').value = subject;
+      } else {
+        document.querySelector('#compose-subject').value = `Re: ${email.subject}`;
+      }
+      // format the body
+      const body = `On ${email['timestamp']}, ${email['sender']} wrote: ${email['body']}`;
+      document.querySelector('#compose-body').value = body;
+      console.log(body)
+    });
+    document.querySelector('.buttons').appendChild(button_reply);
+    });
 }
-
 
 
